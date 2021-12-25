@@ -6,6 +6,7 @@ import org.optaplanner.core.api.domain.lookup.PlanningId;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.util.Set;
 
 @Entity
 public class Robots {
@@ -45,5 +46,8 @@ public class Robots {
     public String getName() {
         return name;
     }
+
+
+
 
 }

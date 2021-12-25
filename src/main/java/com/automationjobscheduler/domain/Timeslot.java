@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.time.DayOfWeek;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Entity
@@ -42,10 +43,6 @@ public class Timeslot {
         this.timeRange = timeRange;
     }
 
-    public Timeslot(long id, DayOfWeek dayOfWeek, LocalTime startTime, Integer timeRange) {
-        this(dayOfWeek, startTime, startTime.plusMinutes(50), timeRange);
-        this.id = id;
-    }
 
     @Override
     public String toString() {
@@ -70,6 +67,13 @@ public class Timeslot {
 
     public LocalTime getEndTime() {
         return endTime;
+    }
+
+    public boolean overlapsTime(Timeslot other){
+        if(this == other){
+            return true;
+        }
+        return startTime.compareTo(other.endTime) < 0 && other.startTime.compareTo(endTime)<0;
     }
 
 }

@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.HashMap;
 
@@ -28,7 +29,7 @@ public class Job {
     private Long expectedRuntime; //expected Runtime in hours
     private String parentJob;
 
-
+    private DayOfWeek dayOfWeek;
 
     private enum frequency{
         NONE,
@@ -160,12 +161,23 @@ public class Job {
     }
 
 
-    public LocalTime getTimeslotStartTime(){
-        return this.timeslot.getStartTime();
+    public DayOfWeek getDayOfWeek(){
+        return this.timeslot != null ? this.timeslot.getDayOfWeek() : null;
     }
 
-    public LocalTime getTimeslotEndTime(){
-       return this.timeslot.getEndTime();
+    public LocalTime getStartDateTime(){
+        return this.timeslot != null ? this.timeslot.getStartTime() : null;
     }
+
+    public LocalTime getEndDateTime(){
+        return this.timeslot != null ? this.timeslot.getEndTime() : null;
+    }
+
+    public Integer getTimeRange(){
+        return this.timeslot != null ? this.timeslot.getTimeRange() : null;
+    }
+
+
+
 
 }
