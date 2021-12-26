@@ -180,8 +180,7 @@ public class AutomationJobSchedulerSpringBootApp {
             robotsRepository.save(new Robots("Robots I"));
             robotsRepository.save(new Robots("Robots J"));
             robotsRepository.save(new Robots("Robots K"));
-            robotsRepository.save(new Robots("Robots L"));
-            robotsRepository.save(new Robots("Robots M"));
+
 
 
 
@@ -195,7 +194,7 @@ public class AutomationJobSchedulerSpringBootApp {
 
             HashMap<String, LocalTime> jobScheduledTime2 = new HashMap<>();
             jobScheduledTime2.put("startTime",LocalTime.of(18, 0,0 ));
-            jobScheduledTime2.put("endTime",LocalTime.of(5, 59, 59));
+            jobScheduledTime2.put("endTime",LocalTime.of(23, 59, 59));
 
 
             HashMap<String, LocalTime> jobScheduledTime3 = new HashMap<>();

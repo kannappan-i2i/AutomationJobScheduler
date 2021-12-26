@@ -60,7 +60,9 @@ public class TimeTableConstraintProvider implements ConstraintProvider {
                                                 ((rightJob.getStartDateTime().compareTo(leftJob.getEndDateTime()) <= 0 && rightJob.getStartDateTime().compareTo(leftJob.getStartDateTime()) >= 0)) ||
                                                 ((leftJob.getScheduleWindow().get("endTime").compareTo(leftJob.getScheduleWindow().get("startTime")) <0 || (rightJob.getScheduleWindow().get("endTime").compareTo(rightJob.getScheduleWindow().get("startTime")) < 0 ) ) &&
                                                         (leftJob.getStartDateTime().compareTo(rightJob.getStartDateTime()) == 0 ||
-                                                                leftJob.getEndDateTime().compareTo(rightJob.getEndDateTime()) == 0))
+                                                                leftJob.getEndDateTime().compareTo(rightJob.getEndDateTime()) == 0 ||
+                                                                (leftJob.getStartDateTime().compareTo(rightJob.getEndDateTime()) >= 0 && leftJob.getStartDateTime().compareTo(rightJob.getStartDateTime()) >=0) ||
+                                                                (rightJob.getStartDateTime().compareTo(leftJob.getEndDateTime()) >=0  && rightJob.getStartDateTime().compareTo(leftJob.getStartDateTime()) >= 0 ) ))
                                 ))
                 // ... and penalize each pair with a hard weight.
                 .penalize("overlapping time window conflict", HardSoftScore.ONE_HARD );
