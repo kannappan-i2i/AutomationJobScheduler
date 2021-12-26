@@ -38,7 +38,7 @@ public class Job {
         WEEKLY
     }
 
-    public Job(Long id, String jobName, String robotsGroup, HashMap<String, LocalTime> scheduleWindow, Long maxParallelization, Long expectedRuntime, Timeslot timeslot, Robots robots, String parentJob) {
+    public Job( Long id, String jobName, String robotsGroup, HashMap<String, LocalTime> scheduleWindow, Long maxParallelization, Long expectedRuntime, Timeslot timeslot, Robots robots, String parentJob) {
         this.id = id;
         this.jobName = jobName;
         this.robotsGroup = robotsGroup;
@@ -161,8 +161,12 @@ public class Job {
     }
 
 
-    public DayOfWeek getDayOfWeek(){
-        return this.timeslot != null ? this.timeslot.getDayOfWeek() : null;
+    public DayOfWeek getStartDayOfWeek(){
+        return this.timeslot != null ? this.timeslot.getStartDayOfWeek() : null;
+    }
+
+    public DayOfWeek getEndDayOfWeek(){
+        return this.timeslot != null ? this.timeslot.getEndDayOfWeek() : null;
     }
 
     public LocalTime getStartDateTime(){

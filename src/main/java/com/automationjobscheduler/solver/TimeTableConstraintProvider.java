@@ -21,7 +21,9 @@ public class TimeTableConstraintProvider implements ConstraintProvider {
                 robotConflict(constraintFactory),
                 overLappingTimeWindowConflict(constraintFactory),
                 rewardExpectedTimeWindowConflict(constraintFactory),
-                penalizeMismatchTimeWindowConflict(constraintFactory)
+                penalizeMismatchTimeWindowConflict(constraintFactory),
+                rewardBoundScheduleWindowConflict(constraintFactory),
+                penalizeOutofBoundScheduleWindowConflict(constraintFactory)
 
         };
     }
@@ -36,7 +38,7 @@ public class TimeTableConstraintProvider implements ConstraintProvider {
                         // ... in the same robot ...
                         Joiners.equal(Job::getRobots),
                         // ... in the same day ...
-                        Joiners.filtering((leftJob,rightJob) -> leftJob.getDayOfWeek().equals(rightJob.getDayOfWeek())))
+                        Joiners.filtering((leftJob,rightJob) -> leftJob.getStartDayOfWeek().equals(rightJob.getStartDayOfWeek())  ))
                 // ... and penalize each pair with a hard weight.
                 .penalize("Robots conflict", HardSoftScore.ONE_HARD);
     }
@@ -48,14 +50,17 @@ public class TimeTableConstraintProvider implements ConstraintProvider {
                 .forEachUniquePair(Job.class,
                         // ... in the overlapping timeslot
                         Joiners.equal(Job::getRobots),
-                        Joiners.filtering((leftJob,rightJob) -> leftJob.getDayOfWeek().equals(rightJob.getDayOfWeek())),
+                        Joiners.filtering((leftJob,rightJob) -> leftJob.getStartDayOfWeek().equals(rightJob.getStartDayOfWeek()) ),
                         Joiners.filtering((leftJob, rightJob) ->
                                         ( (leftJob.getEndDateTime().compareTo(rightJob.getEndDateTime()) <= 0) &&
                                         (leftJob.getStartDateTime().compareTo(rightJob.getStartDateTime()) >= 0) )  ||
                                                 ( (rightJob.getEndDateTime().compareTo(leftJob.getEndDateTime()) <= 0 &&
                                                         (rightJob.getStartDateTime().compareTo(leftJob.getStartDateTime()) >= 0))) ||
                                                 ((leftJob.getStartDateTime().compareTo(rightJob.getEndDateTime()) <=0 && leftJob.getStartDateTime().compareTo(rightJob.getStartDateTime()) >= 0)) ||
-                                                ((rightJob.getStartDateTime().compareTo(leftJob.getEndDateTime()) <= 0 && rightJob.getStartDateTime().compareTo(leftJob.getStartDateTime()) >= 0))
+                                                ((rightJob.getStartDateTime().compareTo(leftJob.getEndDateTime()) <= 0 && rightJob.getStartDateTime().compareTo(leftJob.getStartDateTime()) >= 0)) ||
+                                                ((leftJob.getScheduleWindow().get("endTime").compareTo(leftJob.getScheduleWindow().get("startTime")) <0 || (rightJob.getScheduleWindow().get("endTime").compareTo(rightJob.getScheduleWindow().get("startTime")) < 0 ) ) &&
+                                                        (leftJob.getStartDateTime().compareTo(rightJob.getStartDateTime()) == 0 ||
+                                                                leftJob.getEndDateTime().compareTo(rightJob.getEndDateTime()) == 0))
                                 ))
                 // ... and penalize each pair with a hard weight.
                 .penalize("overlapping time window conflict", HardSoftScore.ONE_HARD );
@@ -78,6 +83,24 @@ public class TimeTableConstraintProvider implements ConstraintProvider {
                         .penalize(" expected time window conflict", HardSoftScore.ONE_HARD);
 
     }
+
+    Constraint rewardBoundScheduleWindowConflict(ConstraintFactory constraintFactory){
+        return
+                constraintFactory
+                        .forEach(Job.class)
+                        .filter(e -> (e.getEndDateTime().compareTo(e.getScheduleWindow().get("endTime")) <=0 ) && e.getStartDateTime().compareTo(e.getScheduleWindow().get("startTime")) >= 0  )
+                        .reward("Bounded schedule window", HardSoftScore.ONE_SOFT);
+    }
+
+    Constraint penalizeOutofBoundScheduleWindowConflict(ConstraintFactory constraintFactory){
+        return
+                constraintFactory
+                        .forEach(Job.class)
+                        .filter(e -> (!((e.getEndDateTime().compareTo(e.getScheduleWindow().get("endTime")) <=0 ) && (e.getStartDateTime().compareTo(e.getScheduleWindow().get("startTime")) >= 0 ) ) ))
+                        .penalize("Out of bound schedule window", HardSoftScore.ONE_HARD);
+    }
+
+
 
      /*
 

@@ -18,7 +18,8 @@ public class Timeslot {
     @Id @GeneratedValue
     private Long id;
 
-    private DayOfWeek dayOfWeek;
+    private DayOfWeek startDayOfWeek;
+    private DayOfWeek endDayOfWeek;
     private LocalTime startTime;
     private LocalTime endTime;
     private Integer timeRange;
@@ -36,17 +37,18 @@ public class Timeslot {
     public Timeslot() {
     }
 
-    public Timeslot(DayOfWeek dayOfWeek, LocalTime startTime, LocalTime endTime, Integer timeRange) {
-        this.dayOfWeek = dayOfWeek;
+    public Timeslot(DayOfWeek startDayOfWeek, LocalTime startTime, LocalTime endTime, Integer timeRange, DayOfWeek endDayOfWeek) {
+        this.startDayOfWeek = startDayOfWeek;
         this.startTime = startTime;
         this.endTime = endTime;
         this.timeRange = timeRange;
+        this.endDayOfWeek = endDayOfWeek;
     }
 
 
     @Override
     public String toString() {
-        return dayOfWeek + " " + startTime;
+        return startDayOfWeek + " " + startTime;
     }
 
     // ************************************************************************
@@ -57,8 +59,12 @@ public class Timeslot {
         return id;
     }
 
-    public DayOfWeek getDayOfWeek() {
-        return dayOfWeek;
+    public DayOfWeek getStartDayOfWeek() {
+        return startDayOfWeek;
+    }
+
+    public DayOfWeek getEndDayOfWeek() {
+        return endDayOfWeek;
     }
 
     public LocalTime getStartTime() {
